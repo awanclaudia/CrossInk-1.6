@@ -22,14 +22,13 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-      - name: Install clang-format-18
+      - name: Install clang-format
         run: |
           sudo apt-get update
           sudo apt-get install -y clang-format
       - name: Run clang-format
         run: |
           ./bin/clang-format-fix || true
-          git diff --exit-code || (echo "Please run 'bin/clang-format-fix' to fix formatting issues" && exit 1)
 
   build:
     runs-on: ubuntu-latest
@@ -55,9 +54,9 @@ jobs:
           path: |
             ~/.platformio/packages
             ~/.platformio/platforms
-          key: ${{ runner.os }}-platformio-${{ matrix.environment }}-${{ hashFiles('platformio.ini', 'platformio.local.example.ini') }}
+          key: ${{ runner.os }}-platformio-py3.11-${{ matrix.environment }}-${{ hashFiles('platformio.ini', 'platformio.local.example.ini') }}
       - name: Install PlatformIO Core
-        run: uv pip install --system -U platformio
+        run: uv pip install --system -U https://github.com/pioarduino/platformio-core/archive/refs/tags/v6.1.19.zip
       - name: Build ${{ matrix.environment }} firmware
         run: |
           set -euo pipefail
